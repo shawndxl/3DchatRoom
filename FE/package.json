@@ -1,0 +1,14 @@
+{
+  "name": "FE",
+  "version": "0.0.1",
+  "description": "front-end",
+  "private": true,
+  "devDependencies": {},
+  "dependencies": {
+    "socket.io-client": "^1.7.3"
+  },
+  "scripts": {
+    "develop": "fis3 release develop -c",
+    "debug": "fis3 server start --type php --no-browse -p 8082 && fis3 release debug -c && fis3 release debug -wL"
+  }
+}

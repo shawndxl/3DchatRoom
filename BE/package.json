@@ -1,0 +1,13 @@
+{
+  "name": "BE",
+  "version": "0.0.1",
+  "description": "back-end",
+  "private": true,
+  "devDependencies": {},
+  "dependencies": {
+    "socket.io": "^1.7.3"
+  },
+  "scripts": {
+    "develop": "fis3 release develop -c"
+  }
+}
