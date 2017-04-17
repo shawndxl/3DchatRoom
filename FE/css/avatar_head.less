@@ -1,0 +1,112 @@
+#content {
+	color: #333;
+	position: relative;
+	margin-top: 100px;
+	width: 650px;
+	border: 1px solid red;
+	left: 50%;
+	transform: translateX(-50%);
+
+	.head {
+		margin-top: 10px;
+		position: relative;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 200px;
+		height: 200px;
+		border: 1px solid red;
+	}
+	#name_wrap {
+		text-align: center;
+
+		input {
+			width: 170px;
+			height: 32px;
+			margin-top: 20px;
+		}
+		input[type='text'] {
+			padding: 2px 5px;
+		}
+		input[type='submit'] {
+			background-color: #4473cb;
+			outline: 0;
+			border: 0;
+			color: #fff;
+			border-radius: 3px;
+			cursor: pointer;
+		}
+		.sex_switch {
+			@switch_height: 35px;
+			position: relative;
+			width: 82px;
+			height: @switch_height;
+			display: inline-block;
+
+			input {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				margin-top: 0;
+				-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+				filter: alpha(opacity=0);
+				opacity: 0;
+				z-index: 100;
+				cursor: pointer;
+			}
+			label {
+				position: relative;
+				width: 100%;
+				height: 100%;
+				display: block;
+				background: #1F2736; /*#121823*/
+				background: linear-gradient(#121823, #161d2b);
+				border-radius: 30px;
+				box-shadow: inset 0 3px 8px 1px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.2);
+				transition: all .5s ease;
+
+				i {
+					display: block;
+					height: 98%;
+					width: 40%;
+					position: absolute;
+					left: 1%;
+					top: 1%;
+					z-index: 2;
+					border-radius: inherit;
+					background: #283446; /* Fallback */
+					background: linear-gradient(#36455b, #283446);
+					box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 8px rgba(0, 0, 0, 0.3), 0 12px 12px rgba(0, 0, 0, 0.4);
+					transition: all .5s ease;
+				}
+			}
+			input:checked ~ label i {
+				left: auto;
+				left: 58%;
+				transition: all .5s ease;
+			}
+			input:checked ~ span:nth-of-type(1) {
+				background-color: transparent;
+			}
+			input:checked ~ span:nth-of-type(2) {
+				background-color: pink;
+			}
+			span {
+				line-height: @switch_height;
+				position: absolute;
+				top: 0;
+				width: @switch_height;
+				border-radius: 20%;
+
+				&:nth-of-type(1) {
+					right: 110%;
+					background-color: #76bae3;
+				}
+				&:nth-of-type(2) {
+					left: 110%;
+				}
+			}
+		}
+	}
+}

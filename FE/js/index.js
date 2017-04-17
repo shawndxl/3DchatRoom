@@ -1,7 +1,5 @@
 (function() {
-  var getElem = function(selector) {
-    return document.querySelector(selector)
-  }
+  
 
   var baseInfo = {
     room_id: 1,
@@ -88,6 +86,10 @@
           var text = getElem('textarea').value;
           var obj = {room_id,nickname,user_id,text};
           sendMsg(cmd, obj);
+          break;
+        case 'range_sl':
+          console.log(e.target)
+          e.target.setAttribute('class', 'active');
           break;
       }
     })
