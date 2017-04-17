@@ -1,13 +1,12 @@
 "use strict";
 
-var app = require('http').createServer()
-var io = require('socket.io')(app);
+const app = require('http').createServer();
+const io = require('socket.io')(app);
 const port = 8081;
 
-let joinRoom = (room) => {}
-let sendToRoom = (room) => {}
-let leaveRoom = (room) => {}
-
+/**
+ * 所有房间及房间里所有人的基本数据 {room_1: [{user_id, nickname},...],...}
+ */
 var roomAllGuy = {};
 
 function setRoomUser(room, data) {
@@ -17,9 +16,12 @@ function setRoomUser(room, data) {
 	roomAllGuy[room].push(data);
 }
 
-
 function getRoomUser(room) {
 	return roomAllGuy[room];
+}
+
+function leaveRoom(room, socket_id) {
+	roomAllGuy[room] = roomAllGuy[room].filter((item) => item.socket_id != socket_id);
 }
 
 io.on('connection', function(socket) {
@@ -41,13 +43,14 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('msg', function(data) {
-		io.to(socket.user_room).emit('msg', data)
-	})
-});
+		io.to(socket.user_room).emit('msg', data);
+	});
 
-function sendToOther(socket, event, data) {
-	socket.broadcast.emit(event, data); // everyone gets it but the sender
-}
+	socket.on('disconnect', function() {
+		socket.broadcast.to(socket.user_room).emit('leaveGuy', socket.user_data); // 告诉房间里的其他人，这个人离开了
+		leaveRoom(socket.user_room, socket.id);
+	});
+});
 
 app.listen(port);
 

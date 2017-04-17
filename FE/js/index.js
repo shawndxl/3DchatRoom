@@ -15,26 +15,37 @@
 
   socket.on('newGuy', function(data) {
     console.log('newGuy', data)
-    var p = document.createElement('p');
-    p.innerText = ['女', '男'][data.sex] + ': ' + data.nickname;
-    getElem('#room_info').appendChild(p)
+    initOneUser(data);
   });
 
   socket.on('allGuy', function(allData) {
     console.log('1', allData);
     if (!allData) return;
     allData.forEach(function(data) {
-      var p = document.createElement('p');
-      p.innerText = ['女', '男'][data.sex] + ': ' + data.nickname;
-      getElem('#room_info').appendChild(p)
+      initOneUser(data);
     })
-  })
+  });
 
   socket.on('msg', function(data) {
     var p = document.createElement('p');
     p.innerText = data.nickname + ': ' + data.text;
     getElem('#output').appendChild(p);
   });
+
+  socket.on('leaveGuy', function(data) {
+    console.log('leaveGuy', data);
+    try {
+      var userNode = getElem('#user_' + data.user_id);
+      userNode.parentNode.removeChild(userNode);
+    } catch(err) {console.error(err);}
+  })
+
+  function initOneUser(data) {
+    var p = document.createElement('p');
+    p.setAttribute('id', 'user_' + data.user_id);
+    p.innerText = ['女', '男'][data.sex] + ': ' + data.nickname;
+    getElem('#room_info').appendChild(p);
+  }
 
   function sendMsg(event, data) {
     if (!socket) return console.error('no socket');
