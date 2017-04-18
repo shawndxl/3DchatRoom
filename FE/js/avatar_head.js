@@ -1,19 +1,6 @@
-;(function() {
+;
+(function() {
   var rangeHtml = getElem('#rangeHtml').innerHTML;
-  getElem('.hair').style.backgroundColor = '#123';
-
-  // getElem('.range-slider__range')
-
-  getElemAll('.range-slider__range').forEach(function(item) {
-    item.addEventListener('input', function(e) {
-      var value = e.target.value;
-      Array.from(e.target.parentNode.childNodes).filter(function(item) {
-        if (item.nodeType == 1 && item.tagName == 'SPAN') {
-          item.innerText = value;
-        }
-      })
-    })
-  })
 
   initEvent();
 
@@ -30,19 +17,34 @@
       case 'eye':
       case 'mouth':
         return avatar_type_config['head']['face'][key];
-        break; 
+        break;
     };
   }
 
+
+
   function initEvent() {
     getElem('body').addEventListener('click', function(e) {
+      processEvent(e);
+    });
+    getElem('body').addEventListener('input', function(e) {
+      processEvent(e);
+    });
+
+    function processEvent(e) {
       $this = e.target;
       var cmd = $this.getAttribute('cmd');
       // console.log(cmd);
       if (!cmd) return;
 
       switch (cmd) {
+        /* 选择调整的样式 */
         case 'range_sl':
+          if ($this.getAttribute('class') == 'active') {
+            getElem('.range_detail').innerHTML = '';
+            $this.setAttribute('class', '');
+            return;
+          }
           $this.parentNode.childNodes.forEach(function(item) {
             if (item.nodeType == 1) {
               item.setAttribute('class', '')
@@ -53,15 +55,27 @@
           var obj = getObjFromConfig(type);
           var data = [];
           Object.keys(obj).forEach(function(item) {
+            if (typeof obj[item] == 'object') return;
             data.push({
               key: item,
               value: obj[item],
             })
-          })          
+          })
           getElem('.range_detail').innerHTML = jhtmls.render(rangeHtml, data)
           break;
+          /* 调整进度条 input[type='range'] */
+        case 'range_bar':
+          console.log('hello world ');
+          var value = e.target.value;
+          Array.from(e.target.parentNode.childNodes).filter(function(item) {
+            if (item.nodeType == 1 && item.tagName == 'SPAN') {
+              item.innerText = value;
+              // getElem('.hair').style.backgroundColor = '#123';
+            }
+          });
+          break;
       }
-    })
+    }
   }
 
 })();

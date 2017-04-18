@@ -28,9 +28,7 @@
 		position: absolute;
 		left: 110%;
 		top: 0;
-		border: 1px solid red;
-		height: 30px;
-		width: 300px;
+		// border: 1px solid red;
 
 		>div {
 			height: 24px;
@@ -44,11 +42,19 @@
 
 
 .range-slider {
-	margin-top: 10px;
+	margin-bottom: 10px;
+
+	>p:first-child {
+		display: inline-block;
+		width: 40px;
+		background-color: #d7dcdf;
+		text-align: center;
+		border-radius: 5px;
+	}
 }
 .range-slider__range {
 	-webkit-appearance: none;
-	width: calc(100% - (73px));
+	width: calc(100% - 60px);
 	height: 10px;
 	border-radius: 5px;
 	background: #d7dcdf;

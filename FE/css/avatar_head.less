@@ -1,21 +1,34 @@
+body {
+	background-color: #a7d4f4;	
+}
 #content {
 	color: #333;
-	position: relative;
-	margin-top: 100px;
-	width: 650px;
-	border: 1px solid red;
-	left: 50%;
-	transform: translateX(-50%);
+    position: relative;
+    margin-top: 100px;
+    padding: 10px;
+    width: 650px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0,0,0,.1);
+    background: rgba(255,255,255,.1);
 
-	.head {
-		margin-top: 10px;
+	.avatar_container {
 		position: relative;
 		left: 50%;
-		transform: translateX(-50%);
 		width: 200px;
 		height: 200px;
-		border: 1px solid red;
+		transform: translateX(-50%);
+		padding: 10px;
+		border: 1px dotted #999;
+		margin-bottom: 150px;
+
+		.head {
+			width: 100%;
+			height: 100%;
+		}
 	}
+	
 	#name_wrap {
 		text-align: center;
 
@@ -26,6 +39,8 @@
 		}
 		input[type='text'] {
 			padding: 2px 5px;
+			background-color: transparent;
+			border: 1px solid rgba(0, 0, 0, 0.3);
 		}
 		input[type='submit'] {
 			background-color: #4473cb;
@@ -60,8 +75,9 @@
 				width: 100%;
 				height: 100%;
 				display: block;
-				background: #1F2736; /*#121823*/
-				background: linear-gradient(#121823, #161d2b);
+				// background: #1F2736; /*#121823*/
+				// background: linear-gradient(#121823, #161d2b);
+				background: transparent;
 				border-radius: 30px;
 				box-shadow: inset 0 3px 8px 1px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.2);
 				transition: all .5s ease;

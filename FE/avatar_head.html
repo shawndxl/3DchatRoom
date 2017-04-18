@@ -11,25 +11,28 @@
 
 <section id="content">
 
-  <div class="head" avatar_type='1'>
-    <div class="hair">
-      <div class="face">
-        <div class="eye" id="left"></div>
-        <div class="eye" id="right"></div>
-        <div class="mouth">
-          <div class="teeth"></div>
-          <div class="tongue"></div>
+  <div class="avatar_container">
+    <div class="head" avatar_type='1'>
+      <div class="hair">
+        <div class="face">
+          <div class="eye" id="left"></div>
+          <div class="eye" id="right"></div>
+          <div class="mouth">
+            <div class="teeth"></div>
+            <div class="tongue"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  
 
   <div id='name_wrap'>
     <p class="sex_switch">
       <input type="checkbox" name="toggle">  
       <label for="toggle"><i></i></label>
-      <span>男</span>
-      <span>女</span>
+      <span style="color: #255ca5;">男</span>
+      <span style="color: #c43157;">女</span>
     </p>
     <p>
       <input type="text" name="" placeholder="昵称"> 
@@ -55,8 +58,8 @@
       <script type="text/jhtmls" id='rangeHtml'>
       this.forEach(function(item) {
         <div class="range-slider">
-          <span>#{item.key}</span>
-          <input cmd='' class="range-slider__range" type="range" value="100" min="0" max="500">
+          <p>#{item.key}</p>
+          <input cmd='range_bar' class="range-slider__range" type="range" value="100" min="0" max="500">
           <span class="range-slider__value">0</span>
         </div>
       })
@@ -65,19 +68,6 @@
   </div>
 
 </section>
-
-<div>
-  <!-- 头发的样式 -->
-  <div id='range_hair'>
-    <div class="range-slider">
-      <input class="range-slider__range" type="range" value="250" min="0" max="500" step="50">
-      <span class="range-slider__value">0</span>
-    </div>
-
-  </div>
-  
-</div>
-
 
 </body>
 
