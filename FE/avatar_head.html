@@ -12,7 +12,7 @@
 <section id="content">
 
   <div class="avatar_container">
-    <div class="head" avatar_type='1'>
+    <div class="head" avatar_type='1' id='avatar_101'>
       <div class="hair">
         <div class="face">
           <div class="eye" id="left"></div>
@@ -46,11 +46,11 @@
 
   <div id='range_box'>
     <div class="range_wrap">
-      <div cmd='range_sl' r_type='head'>头</div>
-      <div cmd='range_sl' r_type='hair'>头发</div>
-      <div cmd='range_sl' r_type='face'>脸部</div>
-      <div cmd='range_sl' r_type='eye'>眼睛</div>
-      <div cmd='range_sl' r_type='mouth'>嘴巴</div>  
+      <script type="text/jhtmls" id='rangeTypesHtml'>
+        this.forEach(function(item) {
+        <div cmd='range_sl' r_type='#{item.type}'>#{item.desc}</div>        
+        })
+      </script>
     </div>
     
 
@@ -58,9 +58,9 @@
       <script type="text/jhtmls" id='rangeHtml'>
       this.forEach(function(item) {
         <div class="range-slider">
-          <p>#{item.key}</p>
-          <input cmd='range_bar' class="range-slider__range" type="range" value="100" min="0" max="500">
-          <span class="range-slider__value">0</span>
+          <p>#{item.desc}</p>
+          <input cmd='range_bar' class="range-slider__range" type="range" r_type='#{item.type}' value="#{item.default}" min="#{item.min}" max="#{item.max}">
+          <span class="range-slider__value">#{item.default}</span>
         </div>
       })
       </script>
