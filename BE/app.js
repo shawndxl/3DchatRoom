@@ -9,6 +9,9 @@ const port = 8081;
  */
 var roomAllGuy = {};
 
+/**
+ * 把某用户的数据data 添加到房间room中
+ */
 function setRoomUser(room, data) {
 	if (!roomAllGuy[room]) {
 		roomAllGuy[room] = [];
@@ -16,10 +19,16 @@ function setRoomUser(room, data) {
 	roomAllGuy[room].push(data);
 }
 
+/**
+ * 获取某房间中的所有用户数据
+ */
 function getRoomUser(room) {
 	return roomAllGuy[room];
 }
 
+/**
+ * 用户掉线或离开后在房间数据中清除其数据
+ */
 function leaveRoom(room, socket_id) {
 	roomAllGuy[room] = roomAllGuy[room].filter((item) => item.socket_id != socket_id);
 }
@@ -52,6 +61,6 @@ io.on('connection', function(socket) {
 	});
 });
 
-app.listen(port);
-
-console.log('server runing on ' + port);
+app.listen(port, function() {
+	console.log('server runing on ' + port);
+});
