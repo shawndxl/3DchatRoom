@@ -5,27 +5,57 @@
   var rangeHtml = getElem('#rangeHtml').innerHTML;
   var rangeTypesHtml = getElem('#rangeTypesHtml').innerHTML;
 
-  var find = function(elem, name) {
-    console.log(elem);
-    if (elem.childNodes && elem.childNodes.length > 0) {
-      return Array.from(elem.childNodes).filter(function(item) {
-        if (item.nodeType == 1) {
-          if (item.getAttribute('class') == name) {
-            return item;
-          } else {
-            return find(item, name)
+  /**
+   * 在元素及子元素中找到符合选择器的元素
+   * @param  {[DOM object]} elem [description]
+   * @param  {[css selector]} name [description]
+   * @return {[Array]}      [返回空数组或者符合条件的DOM元素的数组]
+   */
+  function find(elem, selector) {
+    var arr = [];
+ 
+    // TODO: 先序遍历的递归算法 尾递归算法能否合并
+    // 思路：把所有元素放进去再遍历
+    var preOrder = function(node) {
+      if (node) {
+        console.log(node);
+        arr.push(node);
+        var child = getChild(node);
+        if (child) {
+          for (var i = 0; i < child.length; i++) {
+            preOrder(child[i]);
           }
-        } 
-      })
-    }
-  };
+        }
+      }
+    };
+
+    preOrder(elem);
+
+    return arr.filter(function(item) {
+      return Array.from(document.querySelectorAll(selector)).includes(item);
+    });
+  }
+
+  /**
+   * 找到节点的所有子元素节点并返回数组
+   */
+  function getChild(elem) {
+    if (!elem.childNodes || !elem.childNodes.length || !(elem.childNodes.length > 0)) return;
+    return Array.from(elem.childNodes).filter(function(item) {
+      return item.nodeType == 1;
+    });
+  }
 
   var avatar0 = initAvatar(avatar_type_config, user_id);
 
-  // avatar0.set('hair', 'backgroundColor', 'pink');
+  initEvent();
 
-  initEvent();  
-
+  /**
+   * [initAvatar: 根据配置文件初始化可调节的项]
+   * @param  {[type]} config  [description]
+   * @param  {[type]} user_id [这个用户的ID，如果对于新人来讲其实是没有ID的，]
+   * @return {[object]}         [提供给新用户配置的初始化人物形象]
+   */
   function initAvatar(config, user_id) {
     if (!config) return console.error('none config file #2');
     /* 初始化可以调节的项 */
@@ -35,36 +65,41 @@
     return new Avatar(config, user_id);
   } 
 
+  /**
+   * [Avatar description: 创建人物对象，包含setter行走属性、改变形象属性，getter位置属性,在页面中插入人物的元素，并以用户id生成DOM ID]
+   * @param {[object]} config  [配置项]
+   * @param {[string]} user_id [用户ID，用来生成对应dom元素的id等唯一信息]
+   */
   function Avatar(config, user_id) {
     var $this = this;
     var $self = document.querySelector('#avatar_' + user_id);
 
-    this.set = function(part, attribute, value) {
-      console.log(part, attribute, value)
-      var $result = find($self, part);
-      if ($result) {
-        $result[0].style[attribute] = value + '%'; // TO DO:根据不同的attribute来改变不同的值，即px或者%等，待修改该参数为直接可以的单位，而非字符串percentage等
-      } else {
-        console.log('none a child named ' + part);
-      }
-    };
-  }
+    /**
+     * [_crate 私有方法 创建人物]
+     * @return {[type]} [description]
+     */
+    var _crate = function() {};
 
-  function getObjFromConfig(key) {
-    if (!avatar_type_config) return console.error('none config file #1');
-    switch (key) {
-      case 'head':
-        return avatar_type_config[key];
-        break;
-      case 'hair':
-      case 'face':
-        return avatar_type_config['head'][key];
-        break;
-      case 'eye':
-      case 'mouth':
-        return avatar_type_config['head']['face'][key];
-        break;
+    /**
+     * [设置形象-设置css属性]
+     * @param {[string]} part      [人物中可以设置的项，例如 'face']
+     * @param {[string]} attribute [css 属性 ，但需要包含在配置文件的属性字典中]
+     * @param {[string]} value     [想要设置的css属性的值]
+     */
+    this.set = function(part, attribute, value) {
+      console.log(part, attribute, value);
+      var selector = '.' + part; // 目前简单的采用调节项的type作为名字，如果优化改动该位置以及对应的html渲染位置即可
+      var $result = find($self, selector);
+      console.log($result);
+      // return;
+      $result.forEach(function(item) {
+        item.style[attribute] = value + '%';
+      })
+      
     };
+
+    this.walkTo = function() {};
+
   }
 
   function initEvent() {
@@ -97,20 +132,12 @@
           $this.setAttribute('class', 'active');
 
           var type = $this.getAttribute('r_type');
-          // var obj = getObjFromConfig(type);
+
           var obj = avatar_type_config.filter(function(item) {
             return item.type == type;
           })[0].attr;
           getElem('.range_detail').innerHTML = jhtmls.render(rangeHtml, obj);
-          /*
-          var data = [];
-          Object.keys(obj).forEach(function(item) {
-            if (typeof obj[item] == 'object') return;
-            data.push({
-              key: item,
-              value: obj[item],
-            })
-          })*/
+         
           break;
           /* 调整进度条 input[type='range'] */
         case 'range_bar':
