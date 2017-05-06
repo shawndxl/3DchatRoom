@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>视距动画</title>
+<link rel="stylesheet" type="text/css" href="../css/base.css">
+<style type="text/css">
+	body {
+		animation: addlen 10s ease-in infinite;
+		/*-webkit-perspective: 1000;*/
+		perspective-origin: center center;
+	}
+	.bottom {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		background: #ccc;
+		transform: rotateX(90deg);
+		transform-style: preserve-3d;
+		transform-origin: bottom center;
+	}
+	.bottom > div{
+		position: absolute;
+		left: 50%;
+		margin-left: -50px;
+		top: 50%;
+		width: 100px;
+		height: 100px;
+		transform-origin: bottom;
+		transform: rotateX(-90deg);
+		background-color: red;
+	}
+	@keyframes addlen {
+		from {
+			-webkit-perspective: 10;
+		}
+		to {
+			-webkit-perspective: 1000;
+		}
+	}
+</style>
+</head>
+<body>
+	<div class="bottom">
+		<div></div>
+	</div>
+</body>
+
+<script>
+// var bottom = document.querySelector('.bottom');
+// bottom.addEventListener('click', function() {
+// 	console.log('get click')
+// });
+</script>
+
+</html>

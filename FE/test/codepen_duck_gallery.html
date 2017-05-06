@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>参考点击事件的影响</title>
+	<style type="text/css">
+		.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: crosshair;
+  height: 100vh;
+  width: 100vw;
+  perspective: 400px;
+}
+
+.progress {
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  height: 10px;
+  width: 100%;
+  background-color: red;
+}
+
+.field {
+  transform: rotateX(45deg);
+  transform-style: preserve-3d;
+  animation-duration: 1s;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.duck {
+  background-color: #FBC02D;
+  width: 75px;
+  height: 75px;
+  margin: 15px;
+  transform-origin: 50% 100%;
+  transition: transform 0.1s cubic-bezier(0, 0, 0.3, 1), background-color 0.1s cubic-bezier(0, 0, 0.3, 1);
+}
+.duck.active {
+  background-color: #FFEE58;
+  transform: rotateX(-55deg);
+}
+
+.info {
+  font-family: sans-serif;
+  text-align: center;
+  color: grey;
+  animation: fadeout 3s ease-in 6s 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes reset {
+  0% {
+    transform: rotateX(45deg) rotateY(0deg);
+  }
+  100% {
+    transform: rotateX(45deg) rotateY(360deg);
+  }
+}
+@keyframes fadeout {
+  0% {
+    color: grey;
+  }
+  100% {
+    color: rgba(255, 255, 255, 0);
+  }
+}
+
+	</style>
+</head>
+<body>
+<div class="container">
+  <div class="progress"></div>
+  <div class="field">
+    <div class="row">
+      <div class="duck"></div>
+      <div class="duck"></div>
+      <div class="duck"></div>
+    </div>
+    <div class="row">
+      <div class="duck"></div>
+      <div class="duck"></div>
+      <div class="duck"></div>
+    </div>
+    <div class="row">
+      <div class="duck"></div>
+      <div class="duck"></div>
+      <div class="duck"></div>
+    </div>
+    <div class="info">
+      click
+    </div>
+  </div>
+</div>	
+</body>
+<style src='jquery'></style>
+<style>
+$('.duck').on('click', function(ev) {
+  // pew pew
+	$(ev.target).removeClass('active');
+});
+
+var pop_up = function(interval) {
+	console.log(interval);
+  
+  // pick a duck
+	var sels = $('.duck:not(.active)');
+  
+  // handle resetting if we don't have a duck
+  if (sels.length == 0) {
+    $('.field').css('animationName', 'reset');
+    // reset the animation when we're done with it so we can do it again
+    setTimeout(_ => $('.field').css('animationName', ''), 1000);
+    
+    // put the ducks away
+    $('.duck').removeClass('active');
+
+    // reset!
+    setTimeout(_ => pop_up(1000), 2000);
+    return;
+  }
+  
+  // vroom
+  $('.progress').css('width', (interval/10) + '%')
+  
+  // interval
+  $(sels[Math.floor(Math.random() * sels.length)]).addClass('active');
+  interval = (interval > 10) ? interval - 10 : interval;
+  
+  setTimeout(function() {pop_up(interval)}.bind(this), interval);
+}
+
+// aaand go!
+pop_up(1000);
+
+	
+</style>
+</html>

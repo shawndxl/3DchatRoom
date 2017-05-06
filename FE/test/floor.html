@@ -1,0 +1,43 @@
+<!--
+perspective 属性指定了观察者与z=0平面的距离，使具有三维位置变换的元素产生透视效果。z>0的三维元素比正常大，而z<0时则比正常小，大小程度由该属性的值决定。
+
+三维元素在观察者后面的部分不会绘制出来，即z轴坐标值大于perspective属性值的部分。
+
+默认情况下，消失点位于元素的中心，但是可以通过设置perspective-origin属性来改变其位置。
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" type="text/css" href="../css/base.css">
+<style type="text/css">
+	body {
+		-webkit-perspective: 1000;
+		/* 当视距设置1则子元素即开始了3D转换，此时因为z=0的位置很近，看起来感觉效果不符合预期，其实是正常的，当视距慢慢增加就能看出3D转换的效果 */
+		/* 视角 跟 视距 共同影响了 点击事件 并不是一个固定的范围就可以，比如视距 刚刚测试在200可以 300不行 800 可以 1000不行 intresting */
+		perspective-origin: center center;
+		/* 比如在1000的时候设置视角center top 不行， center center可以*/
+	}
+	.bottom {
+		border: 1px solid red;
+		width: 100%;
+		height: 100%;
+		background: #ccc;
+		transform: rotateX(90deg);
+		transform-origin: bottom center;
+	}
+</style>
+</head>
+<body>
+	<div class="bottom"></div>
+</body>
+
+<script>
+var bottom = document.querySelector('.bottom');
+bottom.addEventListener('click', function() {
+	console.log('get click')
+})
+console.log(window.screen.width, document.body.offsetWidth)
+</script>
+
+</html>
