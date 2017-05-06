@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" type="text/css" href="css/base.css">
+<link rel="stylesheet" type="text/css" href="css/walk.less">
+<link rel="stylesheet" type="text/css" href="css/head_2.less">
+</head>
+<body>
+<ul class="nav">
+	<li id="beginWalk">走</li>
+	<li id="pauseWalk">暂停</li>
+</ul>
+<div class="btns">
+	<div dirc='left' class="dirc left"></div>
+	<div dirc='right' class="dirc right"></div>
+	<div dirc='top' class="dirc top"></div>
+	<div dirc='bottom' class="dirc bottom">	</div>
+</div>
+
+<div class="person">
+	<div id="robot">
+		<div class="shadow"></div>
+		<div class="head">
+			<div class="hair">
+				<div class="face">
+					<div class="eye" id="left"></div>
+					<div class="eye" id="right"></div>
+					<div class="mouth">
+						<div class="teeth"></div>
+						<div class="tongue"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="arm l"><div><div></div></div></div>
+		<div class="arm r"><div><div></div></div></div>
+		<div class="leg l"><div><div></div></div></div>
+		<div class="leg r"><div><div></div></div></div>
+	</div>
+</div>
+
+</body>
+
+<script>
+var left = document.querySelector('.left');
+var right = document.querySelector('.right');
+var top = document.querySelector('.top');
+var bottom = document.querySelector('.bottom');
+var robot = document.querySelector('.person')
+
+var leftInit = 0;
+var topInit = 0;
+
+var initTimeStramp = 0;
+
+var $ = function(elem) {
+	var obj = {
+		click: function(fn) {
+			document.querySelector(elem).addEventListener('click', fn);
+		}
+	}
+	return obj;
+}
+document.querySelector('#pauseWalk').addEventListener('dblclick', function() {
+	console.log(123);
+})
+
+$('#pauseWalk').click(function() {
+	document.querySelector('.person').setAttribute('class', 'person')
+})
+$('#beginWalk').click(function() {
+	document.querySelector('.person').setAttribute('class', 'person walking')
+})
+
+$('.dirc').click(function() {
+	if (Date.now() - initTimeStramp < 400) return;
+	initTimeStramp = Date.now();
+	switch ($(this).attr('dirc')) {
+		case 'left':
+			leftInit = leftInit - 20;
+			break;
+		case 'right':
+			leftInit = leftInit + 20;
+			break;
+		case 'top':
+			topInit = topInit - 20;
+			break;
+		case 'bottom':
+			topInit = topInit + 20;
+			break;
+	}
+	robot.style.transform = 'translate('+ leftInit +'px, '+ topInit +'px)';
+});
+
+
+</script>
+</html>

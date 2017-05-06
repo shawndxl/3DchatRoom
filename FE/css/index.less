@@ -1,0 +1,149 @@
+.house {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	transform-style: preserve-3d;
+	perspective: 1345px;
+	perspective-origin: center top; // 视角在房子前方顶部中间
+	background: transparent;
+
+  .input_bar {
+    position: absolute;
+    bottom: 20%;
+    left: 0;right: 0;
+    margin: auto;
+    height: 40px;
+    width: 400px;
+    background-image: none;
+    background: transparent;
+    border: 1px solid #d7d7d7;
+
+    input {
+      float: left;
+      height: 100%;
+      border: 0;
+      width: 308px;
+      background: transparent;
+      padding: 5px;
+      color: #fff;
+      &:focus {outline: none;}
+    }
+    >p {
+      cursor: pointer;
+      float: left;
+      margin: 5px;
+      width: 30px;
+      height: 30px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 100%;
+      font-size: 12px;
+      line-height: 30px;
+      text-align: center;
+      color: #d7d7d7;
+      &:hover {background: rgba(255, 255, 255, 0.3);}
+    }
+    >div {
+      cursor: pointer;
+      width: 50px;
+      float: right;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      line-height: 40px;
+      text-align: center;
+      color: #d7d7d7;
+    }
+  }
+
+	>div {
+		position: absolute;
+		height: 100%;
+		@bottomHeight: 900px;
+		background-image: radial-gradient(#265afc, #4f82ff, #45ecff);
+
+		&.left, &.right {
+			width: @bottomHeight;
+		}
+		&.left {
+			//background-color: red;
+			transform: rotateY(90deg);
+			transform-origin: left center;
+		}
+		&.right {
+			top: 0;
+			right: 0;
+			//background-color: red;
+			transform: rotateY(-90deg);
+			transform-origin: right center;
+		}
+		&.top {
+		}
+		&.bottom {
+			position: absolute;
+      z-index: 1111111;
+			bottom: 0;
+			width: 100%;
+			height: @bottomHeight;
+			transform: rotateX(90deg);
+			transform-origin: bottom center;
+			//background-color: rgba(0, 200, 200, 0.3);
+			transform-style: preserve-3d;
+
+      .stand_wrap {
+        position: absolute;
+        z-index: 2;
+        width: 5%;
+        height: 10%;
+        left: 45%;
+        top: 50%;
+        transition: all .4s linear;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+			.liti {
+				transform: rotateX(-90deg);
+				transform-origin: bottom center;
+			}
+			.person {
+				position: absolute;
+        bottom: 50%;
+        pointer-events: auto;
+        &:hover {
+          border: 1px solid red;
+          .btn_wrap {opacity: 1;}
+        }
+        .btn_wrap {
+          position: absolute;
+          opacity: 0;
+          top: -40px;
+          right: 0;
+          height: 30px;
+
+          li {
+            float: right;
+            width: 30px;
+            margin-left: 5px;
+            height: 30px;
+            border-radius: 100%;
+            background: rgba(0, 0, 25, 0.5);
+          }
+        }
+			}
+			span {
+        cursor: pointer;
+			  width: 5%;
+			  height: 10%;
+			  border: 1px solid rgba(255, 255, 255, 0.3);
+			  float: left;
+        &:hover {border-color: #fff;}
+			}
+		}
+		&.back {
+			opacity: 1;
+			width: 100%;
+			transform: translateZ(-@bottomHeight);
+			//background-color: rgba(0, 0, 0, 0.1);
+		}
+		&.front {
+		}
+	}
+}
