@@ -60,8 +60,13 @@
       this.forEach(function(item) {
         <div class="range-slider">
           <p>#{item.desc}</p>
-          <input cmd='range_bar' class="range-slider__range" type="range" r_type='#{item.type}' value="#{item.default}" min="#{item.min}" max="#{item.max}">
-          <span class="range-slider__value">#{item.default}</span>
+          if (item.type.match(/color/i)) {
+            <input type="color" cmd="range_bar" r_type='#{item.type}' value="#{item.default}">
+          } else {
+            <input type="range" cmd='range_bar' r_type='#{item.type}' data-unit='#{item.unit}' value="#{item.default}" min="#{item.min}" max="#{item.max}">
+            <span class="range-slider__value">#{item.default}</span>
+          }
+          
         </div>
       })
       </script>

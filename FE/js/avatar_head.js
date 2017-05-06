@@ -18,7 +18,7 @@
     // 思路：把所有元素放进去再遍历
     var preOrder = function(node) {
       if (node) {
-        console.log(node);
+        // console.log(node);
         arr.push(node);
         var child = getChild(node);
         if (child) {
@@ -93,13 +93,16 @@
       console.log($result);
       // return;
       $result.forEach(function(item) {
-        item.style[attribute] = value + '%';
+        item.style[attribute] = value;
       })
       
     };
 
     this.walkTo = function() {};
 
+    this.emoji = function() {
+      var U1F30D = function() {};
+    }
   }
 
   function initEvent() {
@@ -141,13 +144,20 @@
           break;
           /* 调整进度条 input[type='range'] */
         case 'range_bar':
-          var value = e.target.value;
-          Array.from(e.target.parentNode.childNodes).filter(function(item) {
+          // 如果是颜色，则不用加单位
+          var attr = $this.getAttribute('r_type');
+          var value = e.target.value + e.target.getAttribute('data-unit');
+          if (attr.match(/color/i)) {
+            value = e.target.value;            
+          }
+          // 改变avatar对应的样式
+          var parentType = getElem('.active[cmd="range_sl"]').getAttribute('r_type');
+          avatar0.set(parentType, attr, value); // 待优化，减少渲染次数，方案，手动setTimeout，clearTimeout，或者试试requestAnimationFrame
+          // 找到 span 改变其值
+          Array.from(e.target.parentNode.childNodes).some(function(item) {
             if (item.nodeType == 1 && item.tagName == 'SPAN') {
               item.innerText = value;
-              // getElem('.hair').style.backgroundColor = '#123';
-              var parentType = getElem('.active[cmd="range_sl"]').getAttribute('r_type');
-              avatar0.set(parentType, $this.getAttribute('r_type'), value); // 待优化，减少渲染次数，方案，手动setTimeout，clearTimeout，或者试试requestAnimationFrame
+              return true;
             }
           });
           break;
