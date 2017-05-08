@@ -50,6 +50,9 @@
 
   initEvent();
 
+  // 选择界面，localstorage是否存储了配置来决定显示，按照默认配置或缓存配置来渲染初始人物，选择房间，进入，渲染房间里的所有人，开始聊天
+
+
   /**
    * [initAvatar: 根据配置文件初始化可调节的项]
    * @param  {[type]} config  [description]
@@ -65,20 +68,36 @@
     return new Avatar(config, user_id);
   } 
 
+  // TODO:函数式编程与面向对象编程的优劣，取舍是否要在内存中保留所有avatar对象，能否即逻辑清晰，又实现即用即消
   /**
    * [Avatar description: 创建人物对象，包含setter行走属性、改变形象属性，getter位置属性,在页面中插入人物的元素，并以用户id生成DOM ID]
    * @param {[object]} config  [配置项]
    * @param {[string]} user_id [用户ID，用来生成对应dom元素的id等唯一信息]
    */
   function Avatar(config, user_id) {
-    var $this = this;
+    var _this = this;
+    this.config = config;
+    this.user_id = user_id;
+
     var $self = document.querySelector('#avatar_' + user_id);
 
     /**
-     * [_crate 私有方法 创建人物]
+     * [创建人物]
      * @return {[type]} [description]
      */
-    var _crate = function() {};
+    var _crate = function() {
+      var html = document.querySelector('#saa').html;
+      var div = document.createElement('div');
+      div.setAttribute('id', _this.user_id);
+      div.innerHTML = jhtmls.render(html, _this.config);
+      getElem('.')
+    };
+
+    this.init = function() {
+      _crate();
+    };
+
+    // this.init();
 
     /**
      * [设置形象-设置css属性]
@@ -100,8 +119,16 @@
 
     this.walkTo = function() {};
 
-    this.emoji = function() {
-      var U1F30D = function() {};
+    this.emoji = {
+      U1F30D: function() { // 解析常用的emoji对应一套实用在所有avatar上的动画，作为表情，比如嘴巴的微笑可以通过宽度变宽+边角弧度实现
+        find($self, '.mouth').forEach(function(item) {
+          item.style.width = '10%';
+        });
+        find($self, '.eye').forEach(function(item) {
+          item.style.width = '10%';
+          item.style.height = '10%';
+        });
+      },
     }
   }
 
@@ -166,4 +193,7 @@
 
   }
 
+  setTimeout(function() {
+    console.log(avatar0.emoji.U1F30D())
+  }, 2000)
 })();

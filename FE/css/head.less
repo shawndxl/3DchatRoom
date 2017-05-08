@@ -1,9 +1,11 @@
 .head {
-  width: 300px;
-  height: 300px;
+  position: absolute;
+  transform: translateX(-50%);
   transform-origin: 20% 150%;
-  position: relative;
-  margin-bottom: 100px;
+  width: 90%;
+  height: 90%;
+  bottom: 0;
+  left: 50%;
 }
 
 .hair {
@@ -20,13 +22,13 @@
   box-shadow: inset 0 10px 20px rgba(0, 0, 0, 0.19), inset 0 6px 6px rgba(0, 0, 0, 0.23);
 
   .face {
-    position: relative;
-    top: 20%;
+    position: absolute;
+    bottom: 0;
     left: 0;
     right: 0;
+    margin: auto;
     width: 92%;
     height: 80%;
-    margin: auto;
     background-color: #FFC794;
     border-top-left-radius: 4vh;
     border-top-right-radius: 3vh;
@@ -35,18 +37,20 @@
     box-shadow: inset 0 5px 20px rgba(0, 0, 0, 0.19), inset 3px 3px 6px rgba(0, 0, 0, 0.23);
 
     .eye {
-      position: absolute;
+      position: relative;
       width: 6px;
       height: 6px;
-      margin: 10px;
+      margin: 10%;
+      margin-top: 5% !important; // 因为后天js设置margin会覆盖，所以设置了imp
       border-radius: 50px;
       background-color: #060107;
+      display: inline-block;
 
       &:nth-of-type(1) {
-        left: 10px;
+        // left: 10px;
       }
       &:nth-of-type(2) {
-        right: 10px;
+        // right: 10px;
       }
     }
     .mouth {
@@ -62,11 +66,19 @@
       border-top-right-radius: 1em;
       border-bottom-right-radius: 2em;
       border-bottom-left-radius: 4em;
-      background-color: #111;
+      background-color: #333;
       overflow: hidden;
       border-style: solid;
       border-color: #E87551;
       border-width: 4px;
     }
   }
+}
+
+.head,
+.hair,
+.face,
+.mouth,
+.eye {
+  transition: all .5s;
 }
