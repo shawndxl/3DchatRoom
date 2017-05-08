@@ -1,57 +1,21 @@
-;
 (function() {
+  /* 主逻辑 */
+  var avatarConfig = (window.localStorage && window.localStorage.getItem('avatarInfo') && window.localStorage.getItem('avatarInfo').avatar) || window.avatar_type_config;
+  if (!avatarConfig) return alert('缺少配置文件');
 
-  var user_id = 101;
   var rangeHtml = getElem('#rangeHtml').innerHTML;
   var rangeTypesHtml = getElem('#rangeTypesHtml').innerHTML;
+  var avatarHtml = getElem('#avatarHtml').innerHTML;
 
-  /**
-   * 在元素及子元素中找到符合选择器的元素
-   * @param  {[DOM object]} elem [description]
-   * @param  {[css selector]} name [description]
-   * @return {[Array]}      [返回空数组或者符合条件的DOM元素的数组]
-   */
-  function find(elem, selector) {
-    var arr = [];
- 
-    // TODO: 先序遍历的递归算法 尾递归算法能否合并
-    // 思路：把所有元素放进去再遍历
-    var preOrder = function(node) {
-      if (node) {
-        // console.log(node);
-        arr.push(node);
-        var child = getChild(node);
-        if (child) {
-          for (var i = 0; i < child.length; i++) {
-            preOrder(child[i]);
-          }
-        }
-      }
-    };
-
-    preOrder(elem);
-
-    return arr.filter(function(item) {
-      return Array.from(document.querySelectorAll(selector)).includes(item);
-    });
-  }
-
-  /**
-   * 找到节点的所有子元素节点并返回数组
-   */
-  function getChild(elem) {
-    if (!elem.childNodes || !elem.childNodes.length || !(elem.childNodes.length > 0)) return;
-    return Array.from(elem.childNodes).filter(function(item) {
-      return item.nodeType == 1;
-    });
-  }
-
-  var avatar0 = initAvatar(avatar_type_config, user_id);
+  var avatar0 = initAvatar(avatarConfig, '.avatar_container'); // 根据配置渲染并append到其容器
 
   initEvent();
+  
+  setTimeout(function() {
+    console.log(avatar0.emoji.U1F30D())
+  }, 2000)
 
-  // 选择界面，localstorage是否存储了配置来决定显示，按照默认配置或缓存配置来渲染初始人物，选择房间，进入，渲染房间里的所有人，开始聊天
-
+  /* 主逻辑结束 */
 
   /**
    * [initAvatar: 根据配置文件初始化可调节的项]
@@ -59,13 +23,13 @@
    * @param  {[type]} user_id [这个用户的ID，如果对于新人来讲其实是没有ID的，]
    * @return {[object]}         [提供给新用户配置的初始化人物形象]
    */
-  function initAvatar(config, user_id) {
+  function initAvatar(config, parentSelector) {
     if (!config) return console.error('none config file #2');
     /* 初始化可以调节的项 */
     getElem('#rangeTypesHtml').parentNode.innerHTML = jhtmls.render(rangeTypesHtml, config);
 
     /* 初始化Avatar */
-    return new Avatar(config, user_id);
+    return new Avatar(config, 0, parentSelector); // 该页面用0，其他页面用正式的ID
   } 
 
   // TODO:函数式编程与面向对象编程的优劣，取舍是否要在内存中保留所有avatar对象，能否即逻辑清晰，又实现即用即消
@@ -74,7 +38,7 @@
    * @param {[object]} config  [配置项]
    * @param {[string]} user_id [用户ID，用来生成对应dom元素的id等唯一信息]
    */
-  function Avatar(config, user_id) {
+  function Avatar(config, user_id, parentSelector) {
     var _this = this;
     this.config = config;
     this.user_id = user_id;
@@ -89,8 +53,16 @@
       var html = document.querySelector('#saa').html;
       var div = document.createElement('div');
       div.setAttribute('id', _this.user_id);
-      div.innerHTML = jhtmls.render(html, _this.config);
-      getElem('.')
+      div.innerHTML = jhtmls.render(html, {
+        config: _this.config,
+        user_id: _this.user_id,
+      });
+      _this.config.forEach(function(item) {
+        item.attr.forEach(function(subItem) {
+          _this.set(item, subItem.type, subItem.default); // 初始化配置项中的所有属性
+        })
+      })
+      getElem(parentSelector).appendChild(div);
     };
 
     this.init = function() {
@@ -163,7 +135,7 @@
 
           var type = $this.getAttribute('r_type');
 
-          var obj = avatar_type_config.filter(function(item) {
+          var obj = avatarConfig.filter(function(item) {
             return item.type == type;
           })[0].attr;
           getElem('.range_detail').innerHTML = jhtmls.render(rangeHtml, obj);
@@ -171,29 +143,47 @@
           break;
           /* 调整进度条 input[type='range'] */
         case 'range_bar':
-          // 如果是颜色，则不用加单位
           var attr = $this.getAttribute('r_type');
           var value = e.target.value + e.target.getAttribute('data-unit');
-          if (attr.match(/color/i)) {
+          if (attr.match(/color/i)) { // 如果是颜色，则不用加单位
             value = e.target.value;            
           }
           // 改变avatar对应的样式
           var parentType = getElem('.active[cmd="range_sl"]').getAttribute('r_type');
-          avatar0.set(parentType, attr, value); // 待优化，减少渲染次数，方案，手动setTimeout，clearTimeout，或者试试requestAnimationFrame
+          avatar0.set(parentType, attr, value); // TODO: 减少渲染次数，方案，手动setTimeout，clearTimeout，或者试试requestAnimationFrame
           // 找到 span 改变其值
-          Array.from(e.target.parentNode.childNodes).some(function(item) {
+          Array.from(e.target.parentNode.childNodes).some(function(item) { // TODO: 使用月影的方法替代Array.from
             if (item.nodeType == 1 && item.tagName == 'SPAN') {
               item.innerText = value;
               return true;
             }
           });
+          // 同时改变配置对象的值，以便提交时可以直接把最后的配置项本身保存到
+          avatarConfig.some(function(item) {
+            if (item.type === parentType) {
+              item.attr.some(function(subItem) {
+                subItem[attr].default = value;
+                return true;
+              });
+              return true;
+            }
+          });
+          break;
+        case 'submit':
+          // if (!ready) return;
+          var avatarInfo = {
+            name: '',
+            id: Math.random().toString(32).slice(2, 7), // 生成一个随机的五位字符串作为ID 
+            sex: 1,
+            avatar: avatarConfig
+          }
+          localStorage.setItem('avatarInfo', avatarInfo);
+          window.location = 'house.html';
           break;
       }
     }
 
   }
 
-  setTimeout(function() {
-    console.log(avatar0.emoji.U1F30D())
-  }, 2000)
+  
 })();

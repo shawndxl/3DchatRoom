@@ -277,10 +277,3 @@
 
   exports.avatar_type_config = config;
 })(window);
-
-// 页面的所有数据目前先写到本地，待优化放置到redis中去
-
-/*
-
-localStorage.setItem('avatarInfo', avatarInfo);
-*/

@@ -1,4 +1,21 @@
 (function() {
+	if (!window.localStorage) return alert('Not found localStorage!');
+	if(!localStorage.getItem('avatarInfo')) return window.location = 'index.html';
+
+	var avatarInfo = {
+	  id: 'sfa',
+	  name: 'dxx',
+	  sex: 1,
+	  avatar: {
+	  }
+	};
+
+	var avatarInfo = localStorage.getItem('avatarInfo');
+
+	// 人物的移动镜头（视角）也会移动
+	function initAvatar() {}
+	function initWs() {}
+
 	var leftInit = 0;
 	var topInit = 0;
 
