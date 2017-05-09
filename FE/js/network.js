@@ -1,11 +1,17 @@
 (function(exports) {
+
+
   const wsUrl = 'http://localhost:8081';
 
   function initSocket(baseInfo) {
-    var _socket = io(wsUrl, {
-      reconnectionDelay: 1000,
-      reconnectionAttempts: 3
-    });
+    try {
+      var _socket = io(wsUrl, {
+        reconnectionDelay: 1000,
+        reconnectionAttempts: 3
+      });
+    } catch(err) {
+      console.error(err)
+    }
 
     _socket.on('connect', function() {
       // console.log(socket.id);

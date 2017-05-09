@@ -14,51 +14,57 @@
 	}
 
 	var personMove;
-
-	const room_id = 0; // 常量 main_land
-	avatarInfo.room_id = room_id;
-	var socket = initSocket(avatarInfo);
-
-	/* 初始化房间中的所有人 */
-	socket.on('allGuy', function(allData) {
-		console.log('1', allData);
-		if (!allData) return;
-		allData.forEach(function(data) {
-			initOneUser(data);
-		})
-	});
-
-	/* 有新的人加入房间 */
-	socket.on('newGuy', function(data) {
-		console.log('newGuy', data)
-		initOneUser(data);
-	});
-
-	/* 有人离开房间 */
-	socket.on('leaveGuy', function(data) {
-		console.log('leaveGuy', data);
-		try {
-			var userNode = getElem('#user_' + data.user_id);
-			userNode.parentNode.removeChild(userNode);
-		} catch (err) {
-			console.error(err);
-		}
-	});
-
-	/* 接收到消息 */
-	socket.on('msg', function(data) {
-		var p = document.createElement('p');
-		p.innerText = data.nickname + ': ' + data.text;
-		getElem('#output').appendChild(p);
-	});
-
-	// 人物的移动镜头（视角）也会移动
-	function initAvatar() {}
 	initFloor();
 
-	function initWs() {}
+	var room_id = 0;
+	avatarInfo.room_id = room_id;
 
-	var initTimeStramp = 0;
+	//TODO: 整体传递进去，并新增位置参数
+	var a = new Avatar(config, avatarInfo.id, '.bottom'); // Avatar(config, user_id, parentSelector)
+	initEvent();
+	
+
+	var socket = initSocket(avatarInfo);
+	// var socket = '';
+	console.log(socket)
+	if (socket) {
+		/* 初始化房间中的所有人 */
+		socket.on('allGuy', function(allData) {
+			console.log('1', allData);
+			if (!allData) return;
+			allData.forEach(function(data) {
+				initOneUser(data);
+			})
+		});
+
+		/* 有新的人加入房间 */
+		socket.on('newGuy', function(data) {
+			console.log('newGuy', data)
+			initOneUser(data);
+		});
+
+		/* 有人离开房间 */
+		socket.on('leaveGuy', function(data) {
+			console.log('leaveGuy', data);
+			try {
+				var userNode = getElem('#user_' + data.user_id);
+				userNode.parentNode.removeChild(userNode);
+			} catch (err) {
+				console.error(err);
+			}
+		});
+
+		/* 接收到消息 */
+		socket.on('msg', function(data) {
+			var p = document.createElement('p');
+			p.innerText = data.nickname + ': ' + data.text;
+			getElem('#output').appendChild(p);
+		});
+	}
+
+	function initOneUser(data) {
+		console.log('back from server', data)
+	}
 
 	//  $('.person').removeClass('walking')
 	// $('.person').addClass('walking')
@@ -70,16 +76,19 @@
 			processEvent(e);
 		});
 
+		// 无法获取到事件，待修复
 		function processEvent(e) {
 			$this = e.target;
 			var cmd = $this.getAttribute('cmd');
 			// console.log(cmd);
+			alert(cmd)
 			if (!cmd) return;
 
 			switch (cmd) {
-
 				/* 调整进度条 input[type='range'] */
 				case 'floor_board':
+					console.log(123);
+					return;
 					walk(getElem('.stand_wrap'), [e.currentTarget.offsetLeft, e.currentTarget.offsetTop])
 					break;
 				case 'submit':
@@ -90,6 +99,7 @@
 
 	}
 
+	var initTimeStramp = 0;
 	// 自己走路为了体验直接走过去，不通过ws，别人的位置通过ws传递过来，这两者需要一个校正
 	// 独立的行走函数还是放置到每个人的对象中去
 	/**
@@ -102,7 +112,7 @@
 		initTimeStramp = Date.now();
 		clearTimeout(personMove);
 		var person = $person;
-		var robot = find($person, '#robot')[0];
+		var robot = find($person, '.robot')[0];
 		robot.className = 'walking';
 
 		var x1 = person.offsetLeft,
@@ -136,7 +146,9 @@
 	function initFloor() {
 		var bottom = getElem('.bottom');
 		for (var i = 0; i < 200; i++) {
-			bottom.appendChild(document.createElement('span'));
+			var span = document.createElement('span')
+			span.setAttribute('cmd', 'floor_board');
+			bottom.appendChild(span);
 		}
 	}
 })()

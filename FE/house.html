@@ -6,6 +6,7 @@
 <link rel="stylesheet" type="text/css" href="css/base.css">
 <link rel="stylesheet" type="text/css" href="css/index.less">
 <link rel="stylesheet" type="text/css" href="css/person.less">
+<link rel="stylesheet" type="text/css" href="css/head.less">
 <script>
 window.house = {
   houseId: '<?php echo $id;?>'
@@ -21,35 +22,33 @@ console.log('houseId type: ', typeof houseId, ', value: ', house.houseId);
 	<div class="left"></div>
 	<div class="top"></div>
 	<div class="bottom">
+    <script type="text/jhtmls" id='avatarHtml'>
 		<div class="stand_wrap" id='p_1'>
+      
       <div class="person liti">
-        <ul class="btn_wrap">
-          <li></li><li></li>
-        </ul>
-  			<div id="robot">
-          <!-- <div class="shadow"></div> -->
-          
-            <div class="head">
-              <div class="hair">
-                <div class="face">
-                  <div class="eye" id="left"></div>
-                  <div class="eye" id="right"></div>
-                  <div class="mouth">
-                    <div class="teeth"></div>
-                    <div class="tongue"></div>
-                  </div>
+        <div class="robot">    
+          <div class="head">
+            <div class="hair">
+              <div class="face">
+                <div class="eye" id="left"></div>
+                <div class="eye" id="right"></div>
+                <div class="mouth">
+                  <div class="teeth"></div>
+                  <div class="tongue"></div>
                 </div>
               </div>
             </div>
-          
-
+          </div>
+        
           <div class="arm l"><div><div></div></div></div>
           <div class="arm r"><div><div></div></div></div>
           <div class="leg l"><div><div></div></div></div>
           <div class="leg r"><div><div></div></div></div>
         </div>
-      </div>
+      </div>  
+      
 		</div>
+    </script>    
 	</div>
 	<div class="front"></div>
 	<div class="back"></div>
@@ -59,10 +58,17 @@ console.log('houseId type: ', typeof houseId, ', value: ', house.houseId);
     <div>提交</div>
   </div>
 </div>
+
+
+
 </body>
 
 <script src='node_modules/jquery/dist/jquery.js'></script>
+<script src='node_modules/jhtmls/jhtmls.js'></script>
+<script src="node_modules/socket.io-client/dist/socket.io.js"></script>
 <script src='js/unit.js'></script>
+<script src='js/avatar.js'></script>
+<script src='js/network.js'></script>
 <script src='js/house.js'></script>
 
 </html>

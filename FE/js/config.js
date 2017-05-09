@@ -4,25 +4,26 @@
    * @type {Array}
    */
   var config = [
+  // {
+  //   type: 'head',
+  //   desc: '头部',
+  //   attr: [{
+  //     type: 'width',
+  //     desc: '宽度',
+  //     unit: '%',
+  //     default: '90',
+  //     min: '90',
+  //     max: '90',
+  //   }, {
+  //     type: 'height',
+  //     desc: '高度',
+  //     unit: '%',
+  //     default: '90',
+  //     min: '90',
+  //     max: '90',
+  //   }, ]
+  // }, 
   {
-    type: 'head',
-    desc: '头部',
-    attr: [{
-      type: 'width',
-      desc: '宽度',
-      unit: '%',
-      default: '90',
-      min: '90',
-      max: '90',
-    }, {
-      type: 'height',
-      desc: '高度',
-      unit: '%',
-      default: '90',
-      min: '90',
-      max: '90',
-    }, ]
-  }, {
     type: 'hair',
     desc: '头发',
     attr: [{

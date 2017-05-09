@@ -1,12 +1,5 @@
-.head {
-  position: absolute;
-  transform: translateX(-50%);
-  transform-origin: 20% 150%;
-  width: 90%;
-  height: 90%;
-  bottom: 0;
-  left: 50%;
-}
+
+  // head 为avatar头像的容器，需要固定为方形，可供定位即可，头部整体的动画也设置在head上
 
 .hair {
   position: absolute;
@@ -20,6 +13,7 @@
   border-bottom-right-radius: 3em;
   border-bottom-left-radius: 4em;
   box-shadow: inset 0 10px 20px rgba(0, 0, 0, 0.19), inset 0 6px 6px rgba(0, 0, 0, 0.23);
+  text-align: center;
 
   .face {
     position: absolute;
@@ -38,8 +32,8 @@
 
     .eye {
       position: relative;
-      width: 6px;
-      height: 6px;
+      width: 6%;
+      height: 6%;
       margin: 10%;
       margin-top: 20% !important; // 因为后天js设置margin会覆盖，所以设置了imp
       border-radius: 50px;
@@ -75,7 +69,6 @@
   }
 }
 
-.head,
 .hair,
 .face,
 .mouth,
