@@ -1,6 +1,6 @@
 (function() {
   /* 主逻辑 */
-  var avatarConfig = (window.localStorage && window.localStorage.getItem('avatarInfo') && window.localStorage.getItem('avatarInfo').avatar) || window.avatar_type_config;
+  var avatarConfig = (window.localStorage && localStorage.getItem('avatarInfo') && JSON.parse(localStorage.getItem('avatarInfo')).avatar) || window.avatar_type_config;
   if (!avatarConfig) return alert('缺少配置文件');
 
   var rangeHtml = getElem('#rangeHtml').innerHTML;
@@ -12,7 +12,8 @@
   initEvent();
   
   setTimeout(function() {
-    console.log(avatar0.emoji.U1F30D())
+    console.log(avatar0.emoji.U1F30D(), 'ssfl')
+    // avatar0.set('head', 'width', '62%');
   }, 2000)
 
   /* 主逻辑结束 */
@@ -43,33 +44,30 @@
     this.config = config;
     this.user_id = user_id;
 
-    var $self = document.querySelector('#avatar_' + user_id);
+    // var $self = document.querySelector('#avatar_' + user_id);
 
     /**
      * [创建人物]
      * @return {[type]} [description]
      */
     var _crate = function() {
-      var html = document.querySelector('#saa').html;
+      var html = avatarHtml;
       var div = document.createElement('div');
-      div.setAttribute('id', _this.user_id);
+      _this.$self = div;
+      getElem(parentSelector).appendChild(div);
+      div.setAttribute('id', 'avatar_' + _this.user_id);
       div.innerHTML = jhtmls.render(html, {
         config: _this.config,
         user_id: _this.user_id,
       });
       _this.config.forEach(function(item) {
         item.attr.forEach(function(subItem) {
-          _this.set(item, subItem.type, subItem.default); // 初始化配置项中的所有属性
+          _this.set(item.type, subItem.type, subItem.default); // 初始化配置项中的所有属性
         })
-      })
-      getElem(parentSelector).appendChild(div);
+      });
     };
 
-    this.init = function() {
-      _crate();
-    };
-
-    // this.init();
+    
 
     /**
      * [设置形象-设置css属性]
@@ -80,7 +78,7 @@
     this.set = function(part, attribute, value) {
       console.log(part, attribute, value);
       var selector = '.' + part; // 目前简单的采用调节项的type作为名字，如果优化改动该位置以及对应的html渲染位置即可
-      var $result = find($self, selector);
+      var $result = find(this.$self, selector);
       console.log($result);
       // return;
       $result.forEach(function(item) {
@@ -93,15 +91,21 @@
 
     this.emoji = {
       U1F30D: function() { // 解析常用的emoji对应一套实用在所有avatar上的动画，作为表情，比如嘴巴的微笑可以通过宽度变宽+边角弧度实现
-        find($self, '.mouth').forEach(function(item) {
+        find(this.$self, '.mouth').forEach(function(item) {
           item.style.width = '10%';
         });
-        find($self, '.eye').forEach(function(item) {
+        find(this.$self, '.eye').forEach(function(item) {
           item.style.width = '10%';
           item.style.height = '10%';
         });
       },
     }
+
+    this.init = function() {
+      _crate();
+    };
+
+    this.init();
   }
 
   function initEvent() {
@@ -162,22 +166,27 @@
           avatarConfig.some(function(item) {
             if (item.type === parentType) {
               item.attr.some(function(subItem) {
-                subItem[attr].default = value;
-                return true;
+                if (subItem.type === attr) {
+                  subItem.default = value;
+                  return true;
+                }
               });
               return true;
             }
           });
           break;
         case 'submit':
-          // if (!ready) return;
+          var sex = getElem('#checkbox').checked ? 0 : 1;
+          var name = getElem('#nickname').value.trim();
+          console.log(sex, ':', name);
+          if (!name) return alert('input a nickname');
           var avatarInfo = {
-            name: '',
             id: Math.random().toString(32).slice(2, 7), // 生成一个随机的五位字符串作为ID 
-            sex: 1,
+            name: name,
+            sex: sex,
             avatar: avatarConfig
           }
-          localStorage.setItem('avatarInfo', avatarInfo);
+          localStorage.setItem('avatarInfo', JSON.stringify(avatarInfo));
           window.location = 'house.html';
           break;
       }
