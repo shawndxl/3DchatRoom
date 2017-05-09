@@ -6,6 +6,13 @@
 <link rel="stylesheet" type="text/css" href="css/base.css">
 <link rel="stylesheet" type="text/css" href="css/index.less">
 <link rel="stylesheet" type="text/css" href="css/person.less">
+<script>
+window.house = {
+  houseId: '<?php echo $id;?>'
+}
+console.log('houseId type: ', typeof houseId, ', value: ', house.houseId);
+</script>
+
 </head>
 <body>
 
@@ -21,18 +28,21 @@
         </ul>
   			<div id="robot">
           <!-- <div class="shadow"></div> -->
-          <div class="head">
-            <div class="hair">
-              <div class="face">
-                <div class="eye" id="left"></div>
-                <div class="eye" id="right"></div>
-                <div class="mouth">
-                  <div class="teeth"></div>
-                  <div class="tongue"></div>
+          
+            <div class="head">
+              <div class="hair">
+                <div class="face">
+                  <div class="eye" id="left"></div>
+                  <div class="eye" id="right"></div>
+                  <div class="mouth">
+                    <div class="teeth"></div>
+                    <div class="tongue"></div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          
+
           <div class="arm l"><div><div></div></div></div>
           <div class="arm r"><div><div></div></div></div>
           <div class="leg l"><div><div></div></div></div>
@@ -52,6 +62,7 @@
 </body>
 
 <script src='node_modules/jquery/dist/jquery.js'></script>
+<script src='js/unit.js'></script>
 <script src='js/house.js'></script>
 
 </html>

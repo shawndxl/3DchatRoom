@@ -1,21 +1,27 @@
 (function() {
   
+  /* 主逻辑 */
+  var avatarInfo = window.localStorage && localStorage.getItem('avatarInfo') && JSON.parse(localStorage.getItem('avatarInfo'));
+  if (!avatarInfo) return alert('not found config file #1');
 
-  var baseInfo = {
-    room_id: 1,
-    user_id: Math.ceil(Math.random() * 100),
-    nickname: Math.round(Date.now() / Math.ceil(Math.random() * 10 )).toString(36),
+  var config = avatarInfo.avatar;
+
+
+  const room_id = 0; // 常量 main_land
+  const wsUrl = 'http://localhost:8081';
+
+  console.log(avatarInfo)
+
+  var socket = initSocket({
+    room_id: room_id,
+    user_id: avatarInfo.user_id,
+    nickname: avatarInfo.name,
     sex: 1
-  }
-
-  var socket = initSocket(baseInfo);
+  });
+  
   initEvent();
 
-  socket.on('newGuy', function(data) {
-    console.log('newGuy', data)
-    initOneUser(data);
-  });
-
+  /* 初始化房间中的所有人 */
   socket.on('allGuy', function(allData) {
     console.log('1', allData);
     if (!allData) return;
@@ -24,19 +30,27 @@
     })
   });
 
-  socket.on('msg', function(data) {
-    var p = document.createElement('p');
-    p.innerText = data.nickname + ': ' + data.text;
-    getElem('#output').appendChild(p);
+  /* 有新的人加入房间 */
+  socket.on('newGuy', function(data) {
+    console.log('newGuy', data)
+    initOneUser(data);
   });
 
+  /* 有人离开房间 */
   socket.on('leaveGuy', function(data) {
     console.log('leaveGuy', data);
     try {
       var userNode = getElem('#user_' + data.user_id);
       userNode.parentNode.removeChild(userNode);
     } catch(err) {console.error(err);}
-  })
+  });
+
+  /* 接收到消息 */
+  socket.on('msg', function(data) {
+    var p = document.createElement('p');
+    p.innerText = data.nickname + ': ' + data.text;
+    getElem('#output').appendChild(p);
+  });
 
   function initOneUser(data) {
     var p = document.createElement('p');
@@ -51,7 +65,7 @@
   }
 
   function initSocket(baseInfo) {
-    var _socket = io('http://localhost:8081', {
+    var _socket = io(wsUrl, {
       reconnectionDelay: 1000,
       reconnectionAttempts: 3
     });
@@ -79,6 +93,7 @@
       if (!cmd) return;
 
       switch (cmd) {
+        /* 发送消息 */
         case 'msg':
           var room_id = getElem('#room_id').value;
           var nickname = getElem('#nickname').value;
@@ -87,10 +102,7 @@
           var obj = {room_id,nickname,user_id,text};
           sendMsg(cmd, obj);
           break;
-        case 'range_sl':
-          console.log(e.target)
-          e.target.setAttribute('class', 'active');
-          break;
+
       }
     })
   }

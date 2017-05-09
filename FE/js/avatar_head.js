@@ -1,7 +1,9 @@
 (function() {
   /* 主逻辑 */
   var avatarConfig = (window.localStorage && localStorage.getItem('avatarInfo') && JSON.parse(localStorage.getItem('avatarInfo')).avatar) || window.avatar_type_config;
-  if (!avatarConfig) return alert('缺少配置文件');
+  if (!avatarConfig) return alert('not found config file #1');
+  console.log(avatarConfig);
+  return;
 
   var rangeHtml = getElem('#rangeHtml').innerHTML;
   var rangeTypesHtml = getElem('#rangeTypesHtml').innerHTML;
@@ -25,12 +27,12 @@
    * @return {[object]}         [提供给新用户配置的初始化人物形象]
    */
   function initAvatar(config, parentSelector) {
-    if (!config) return console.error('none config file #2');
+    if (!config) return console.error('not found config file #2');
     /* 初始化可以调节的项 */
     getElem('#rangeTypesHtml').parentNode.innerHTML = jhtmls.render(rangeTypesHtml, config);
 
     /* 初始化Avatar */
-    return new Avatar(config, 0, parentSelector); // 该页面用0，其他页面用正式的ID
+    return new Avatar(config, 0, parentSelector); // 该页面用0，其他页面用正式ID
   } 
 
   // TODO:函数式编程与面向对象编程的优劣，取舍是否要在内存中保留所有avatar对象，能否即逻辑清晰，又实现即用即消
@@ -62,12 +64,10 @@
       });
       _this.config.forEach(function(item) {
         item.attr.forEach(function(subItem) {
-          _this.set(item.type, subItem.type, subItem.default); // 初始化配置项中的所有属性
+          _this.set(item.type, subItem.type, subItem.default + subItem.unit); // 初始化配置项中的所有属性
         })
       });
     };
-
-    
 
     /**
      * [设置形象-设置css属性]
@@ -79,7 +79,7 @@
       console.log(part, attribute, value);
       var selector = '.' + part; // 目前简单的采用调节项的type作为名字，如果优化改动该位置以及对应的html渲染位置即可
       var $result = find(this.$self, selector);
-      console.log($result);
+      // console.log($result);
       // return;
       $result.forEach(function(item) {
         item.style[attribute] = value;
@@ -167,7 +167,7 @@
             if (item.type === parentType) {
               item.attr.some(function(subItem) {
                 if (subItem.type === attr) {
-                  subItem.default = value;
+                  subItem.default = e.target.value; // 存储不带单位的
                   return true;
                 }
               });

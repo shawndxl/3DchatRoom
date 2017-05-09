@@ -3,22 +3,23 @@
    * [配置文件：1 对眼睛应该有特殊处理，有颜色的需求，有不同单位的需求]
    * @type {Array}
    */
-  var config = [{
+  var config = [
+  {
     type: 'head',
     desc: '头部',
     attr: [{
       type: 'width',
       desc: '宽度',
       unit: '%',
-      default: '60',
-      min: '40',
+      default: '90',
+      min: '90',
       max: '90',
     }, {
       type: 'height',
       desc: '高度',
       unit: '%',
-      default: '60',
-      min: '40',
+      default: '90',
+      min: '90',
       max: '90',
     }, ]
   }, {
@@ -28,81 +29,84 @@
       type: 'borderTopLeftRadius',
       desc: '左上角',
       unit: '%',
-      default: '20',
+      default: '50',
       min: '0',
       max: '100',
     }, {
       type: 'borderTopRightRadius',
       desc: '右上角',
       unit: '%',
-      default: '20',
+      default: '50',
       min: '0',
       max: '100',
     }, {
       type: 'borderBottomRightRadius',
       desc: '右下角',
       unit: '%',
-      default: '20',
+      default: '0',
       min: '0',
       max: '100',
     }, {
       type: 'borderBottomLeftRadius',
       desc: '左下角',
       unit: '%',
-      default: '20',
+      default: '00',
       min: '0',
       max: '100',
     }, {
       type: 'backgroundColor',
       desc: '颜色',
       unit: '',
-      default: '#ffffff', // 必须是6为16进制，3位或者red，rgb hsl等都无效
+      default: '#8080ff', // 必须是6为16进制，3位或者red，rgb hsl等都无效
     }]
-  }, {
+  }, 
+  {
     type: 'face',
     desc: '脸部',
-    attr: [{
-      type: 'width',
-      desc: '宽度',
-      unit: '%',
-      default: '60',
-      min: '40',
-      max: '90',
-    }, {
-      type: 'height',
-      desc: '高度',
-      unit: '%',
-      default: '60',
-      min: '40',
-      max: '90',
-    }, {
+    attr: [
+    // {
+    //   type: 'width',
+    //   desc: '宽度',
+    //   unit: '%',
+    //   default: '60',
+    //   min: '40',
+    //   max: '90',
+    // }, {
+    //   type: 'height',
+    //   desc: '高度',
+    //   unit: '%',
+    //   default: '60',
+    //   min: '40',
+    //   max: '90',
+    // }, 
+    {
       type: 'borderTopLeftRadius',
       desc: '左上角',
       unit: '%',
-      default: '0%',
-      min: '0%',
-      max: '100%',
+      default: '22',
+      min: '0',
+      max: '100',
     }, {
       type: 'borderTopRightRadius',
       desc: '右上角',
       unit: '%',
-      default: '0%',
-      min: '0%',
-      max: '100%',
+      default: '22',
+      min: '0',
+      max: '100',
     }, {
       type: 'borderBottomRightRadius',
       desc: '右下角',
       unit: '%',
-      default: '0%',
-      min: '0%',
-      max: '100%',
+      default: '22',
+      min: '0',
+      max: '100',
     }, {
       type: 'borderBottomLeftRadius',
       desc: '左下角',
       unit: '%',
-      default: '0%',
-      min: '0%',
-      max: '100%',
+      default: '22',
+      min: '0',
+      max: '100',
     }, ]
   }, {
     type: 'eye',
@@ -141,7 +145,7 @@
       type: 'width',
       desc: '宽度',
       unit: '%',
-      default: '20',
+      default: '15',
       min: '10',
       max: '36',
     }, {
@@ -156,9 +160,9 @@
     //   type: 'left',
     //   desc: '左偏移',
     //   unit: '%',
-    //   default: '0%',
-    //   min: '0%',
-    //   max: '100%',
+    //   default: '0',
+    //   min: '0',
+    //   max: '100',
     // }, {
     //   type: 'top',
     //   desc: '上偏移',
@@ -171,7 +175,7 @@
       type: 'borderWidth',
       desc: '嘴唇',
       unit: 'px',
-      default: '2',
+      default: '3',
       min: '1',
       max: '5',
     }, 
@@ -179,38 +183,38 @@
     //   type: 'borderColor',
     //   desc: '嘴唇颜色',
     //   unit: '%',
-    //   default: '0%',
-    //   min: '0%',
-    //   max: '100%',
+    //   default: '0',
+    //   min: '0',
+    //   max: '100',
     // }, 
     {
       type: 'borderTopLeftRadius',
       desc: '左上角',
       unit: '%',
-      default: '0%',
-      min: '0%',
-      max: '100%',
+      default: '0',
+      min: '0',
+      max: '100',
     }, {
       type: 'borderTopRightRadius',
       desc: '右上角',
       unit: '%',
-      default: '0%',
-      min: '0%',
-      max: '100%',
+      default: '0',
+      min: '0',
+      max: '100',
     }, {
       type: 'borderBottomRightRadius',
       desc: '右下角',
       unit: '%',
-      default: '0%',
-      min: '0%',
-      max: '100%',
+      default: '100',
+      min: '0',
+      max: '100',
     }, {
       type: 'borderBottomLeftRadius',
       desc: '左下角',
       unit: '%',
-      default: '0%',
-      min: '0%',
-      max: '100%',
+      default: '100',
+      min: '0',
+      max: '100',
     }, ]
   },];
 

@@ -51,4 +51,22 @@
 	}
 	exports.find = find;
 
+	/**
+	 * [有圆心、半径、角度求圆上的某一点]
+	 * @param  {[array]} center [数组[x, y]]
+	 * @param  {[number]} space  [半径]
+	 * @param  {[number]} angle  [角度]
+	 * @return {[array]}        [数组[x, y]]
+	 */
+	function getCirclePoint(center, space, angle) {
+		// var radian = 2 * Math.PI / 360 * angle; 
+		var radian = angle / 180 * Math.PI;// 弧度
+
+		var x1 = Number(center[0]) + Math.cos(radian) * space;
+		var y1 = Number(center[1]) + Math.sin(radian) * space;
+
+		return [x1.toFixed(1), y1.toFixed(1)];
+	}
+	exports.getCirclePoint = getCirclePoint;
+
 })(window);
