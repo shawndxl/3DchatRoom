@@ -35,12 +35,12 @@ function leaveRoom(room, socket_id) {
 
 io.on('connection', function(socket) {
 	socket.on('newGuy', function(data) {
-		var room = 'room_' + data.room_id;
+		var room = 'room_' + data.room_id; // 用roomid 加 字符串room_ 组成room 的key
 		console.log(room, data);
 		socket.join(room, function() {
-			data.socket_id = socket.id;
-			socket.user_data = data;
-			socket.user_room = room;
+			data.socket_id = socket.id; // 前端存储的data中也包含了自己的socketid，即存储在avatarInfo中
+			socket.user_data = data; // 自己的信息也保存在了自己的socket中
+			socket.user_room = room; 
 			socket.user_id = data.user_id;
 			setRoomUser(room, data)
 			// console.log(socket.rooms); // [ <socket.id>, 'room 237' ]
@@ -52,6 +52,8 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('msg', function(data) {
+		data.user_id = socket.user_id;
+		console.log(data)
 		io.to(socket.user_room).emit('msg', data);
 	});
 

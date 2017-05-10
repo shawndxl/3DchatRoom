@@ -29,7 +29,12 @@
     getElem('#rangeTypesHtml').parentNode.innerHTML = jhtmls.render(rangeTypesHtml, config);
 
     /* 初始化Avatar */
-    return new Avatar(config, 0, parentSelector); // 该页面用0，其他页面用正式ID
+    return new Avatar({
+      user_id: 0,
+      name: '',
+      sex: 1,
+      avatar: config,
+    }, parentSelector); // 该页面用0，其他页面用正式ID
   } 
 
   
@@ -107,7 +112,7 @@
           console.log(sex, ':', name);
           if (!name) return alert('input a nickname');
           var avatarInfo = {
-            id: Math.random().toString(32).slice(2, 7), // 生成一个随机的五位字符串作为ID 
+            user_id: Math.random().toString(32).slice(2, 7), // 生成一个随机的五位字符串作为ID 
             name: name,
             sex: sex,
             avatar: avatarConfig

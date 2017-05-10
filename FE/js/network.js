@@ -29,6 +29,8 @@
     // 待确认如何优化包装
     _socket.sendMsg = function(event, data) {
       // if (!socket) return console.error('no socket');
+      // event = msg 为发送信息
+      // event = move 为位置移动信息
       _socket.emit(event, data);
     };
 

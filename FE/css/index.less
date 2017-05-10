@@ -106,13 +106,53 @@
 			.person {
 				position: absolute;
         bottom: 50%;
-        pointer-events: auto;
+        // pointer-events: auto;
         &:hover {
-          // hover wuxiao
+          // hover无效，是因为transform造成的，还是z-index，即使有效，就会造成无法移动到正后方的两个位置的问题
           border: 1px solid red;
           
         }
-        
+        .name_wrap {
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          white-space: nowrap;
+          line-height: 30px;
+          text-align: center;
+          color: #442c78;
+        }
+
+        .text_wrap {
+          position: absolute;
+          left: 120%;
+          top: 2%;
+          width: 160%;
+          >div {
+            position: relative;
+            margin-bottom: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            color: #fff;
+            padding: 15px;
+            transition: all .5s; // 当上一个对话框消失，下一个框上移，却没有改变任何属性，因此没有触发平移动画
+            &:before {
+              content: '';
+              position: absolute;
+              right: 100%;
+              top: 20%;
+              border-style:solid;
+              border-color: rgba(0, 0, 0, 0.5);
+              border-top-width: 10px;
+              border-right-width: 10px;
+              border-bottom-width: 5px;
+              border-left-width: 0;
+              border-top-color:transparent;
+              border-bottom-color:transparent;
+            }
+          }
+          
+        }
 			}
 			span {
         cursor: pointer;

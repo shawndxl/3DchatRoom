@@ -7,10 +7,10 @@
    * @param {[object]} config  [配置项]
    * @param {[string]} user_id [用户ID，用来生成对应dom元素的id等唯一信息]
    */
-  function Avatar(config, user_id, parentSelector) {
+  function Avatar(avatarInfo, parentSelector) {
     var _this = this;
-    this.config = config;
-    this.user_id = user_id;
+    this.config = avatarInfo.avatar;
+    this.user_id = avatarInfo.user_id;
 
     // var $self = document.querySelector('#avatar_' + user_id);
 
@@ -24,10 +24,7 @@
       _this.$self = div;
       getElem(parentSelector).appendChild(div);
       div.setAttribute('id', 'avatar_' + _this.user_id);
-      div.innerHTML = jhtmls.render(html, {
-        config: _this.config,
-        user_id: _this.user_id,
-      });
+      div.innerHTML = jhtmls.render(html, avatarInfo);
       _this.config.forEach(function(item) {
         item.attr.forEach(function(subItem) {
           _this.set(item.type, subItem.type, subItem.default+subItem.unit); // 初始化配置项中的所有属性
@@ -55,15 +52,44 @@
 
     this.walkTo = function() {};
 
+    /**
+     * [得到自身配置中某个部位的某个属性的值]
+     */
+    this.getAttr = function(part, attr) {
+      var obj = _this.config.filter(function(item) {
+        return item.type == part
+      })[0].attr.filter(function(item) {
+        return item.type == attr;
+      })[0];
+      return obj.default + obj.unit; // 连同单位一起返回了
+    };
+
+    /**
+     * [表情函数]
+     * @type {Object}
+     */
     this.emoji = {
       U1F30D: function() { // 解析常用的emoji对应一套实用在所有avatar上的动画，作为表情，比如嘴巴的微笑可以通过宽度变宽+边角弧度实现
-        find(this.$self, '.mouth').forEach(function(item) {
+        console.log('emoji inside');
+        
+        // console.log('old', old);
+        find(_this.$self, '.mouth').forEach(function(item) {
           item.style.width = '10%';
         });
-        find(this.$self, '.eye').forEach(function(item) {
+        find(_this.$self, '.eye').forEach(function(item) {
           item.style.width = '10%';
           item.style.height = '10%';
         });
+        // 待加表情锁，设置最小响应间隔
+        setTimeout(function() {
+          find(_this.$self, '.mouth').forEach(function(item) {
+            item.style.width = _this.getAttr('mouth', 'width');
+          });
+          find(_this.$self, '.eye').forEach(function(item) {
+            item.style.width = _this.getAttr('eye', 'width');
+            item.style.height = _this.getAttr('eye', 'height');
+          });
+        }, 1000);
       },
     }
 
