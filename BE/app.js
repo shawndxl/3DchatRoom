@@ -57,6 +57,12 @@ io.on('connection', function(socket) {
 		io.to(socket.user_room).emit('msg', data);
 	});
 
+	socket.on('position', function(data) {
+		data.user_id = socket.user_id;
+		console.log(data)
+		io.to(socket.user_room).emit('position', data);
+	});
+
 	socket.on('disconnect', function() {
 		socket.broadcast.to(socket.user_room).emit('leaveGuy', socket.user_data); // 告诉房间里的其他人，这个人离开了
 		leaveRoom(socket.user_room, socket.id);

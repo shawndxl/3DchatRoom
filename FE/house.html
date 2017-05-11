@@ -9,9 +9,9 @@
 <link rel="stylesheet" type="text/css" href="css/head.less">
 <script>
 window.house = {
-  houseId: '<?php echo $id;?>'
+  room_id: '<?php echo $id;?>'
 }
-console.log('houseId type: ', typeof houseId, ', value: ', house.houseId);
+console.log('room_id type: ', typeof room_id, ', value: ', house.room_id);
 </script>
 
 </head>
@@ -22,9 +22,7 @@ console.log('houseId type: ', typeof houseId, ', value: ', house.houseId);
 	<div class="left"></div>
 	<div class="top"></div>
 	<div class="bottom">
-    <script type="text/jhtmls" id='avatarHtml'>
-		<div class="stand_wrap" id='p_1'>
-      
+    <script type="text/jhtmls" id='avatarHtml'>      
       <div class="person liti">
 
         <div class="robot">    
@@ -49,13 +47,12 @@ console.log('houseId type: ', typeof houseId, ', value: ', house.houseId);
         
         <div class="name_wrap">#{name}</div>
         <div class="text_wrap"></div>
-      </div>  
-      
-		</div>
+      </div>  		
     </script>    
 	</div>
 	<div class="front"></div>
 	<div class="back"></div>
+
   <div class="input_bar">
     <input type="text" autofocus="autofocus">
     <p cmd='emoji' e_type='U1F30D'>°ο°</p>

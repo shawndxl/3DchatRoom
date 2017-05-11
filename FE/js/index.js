@@ -1,110 +1,136 @@
 (function() {
-  
   /* 主逻辑 */
-  var avatarInfo = window.localStorage && localStorage.getItem('avatarInfo') && JSON.parse(localStorage.getItem('avatarInfo'));
-  if (!avatarInfo) return alert('not found config file #1');
+  if (!window.localStorage) return alert('exit: not support localStorage.');
+  var avatarInfo = localStorage.getItem('avatarInfo');
 
-  var config = avatarInfo.avatar;
+  if (avatarInfo) {
+    avatarInfo = JSON.parse(avatarInfo);
+    doHasStorage(avatarInfo);
+  } else {
+    if (!window.avatar_type_config) return alert('not found config file #1');
+    avatarInfo = {
+      user_id: 0,
+      name: '',
+      sex: 1,
+      floor: 101,
+      avatar: avatar_type_config,
+    }
+  }
+  var avatarConfig = avatarInfo.avatar;
 
+  var rangeHtml = getElem('#rangeHtml').innerHTML;
+  var rangeTypesHtml = getElem('#rangeTypesHtml').innerHTML;
 
-  const room_id = 0; // 常量 main_land
-  const wsUrl = 'http://localhost:8081';
+  var avatar0 = new Avatar(avatarInfo, '.avatar_container'); // 根据配置渲染并append到其容器
 
-  console.log(avatarInfo)
+  /* 初始化可以调节的项 */
+  getElem('#rangeTypesHtml').parentNode.innerHTML = jhtmls.render(rangeTypesHtml, avatarConfig);
 
-  var socket = initSocket({
-    room_id: room_id,
-    user_id: avatarInfo.user_id,
-    nickname: avatarInfo.name,
-    sex: 1
-  });
-  
   initEvent();
 
-  /* 初始化房间中的所有人 */
-  socket.on('allGuy', function(allData) {
-    console.log('1', allData);
-    if (!allData) return;
-    allData.forEach(function(data) {
-      initOneUser(data);
-    })
-  });
+  setTimeout(function() {
+    console.log(avatar0.emoji.U1F30D(), 'ssfl')
+      // avatar0.set('head', 'width', '62%');
+  }, 2000)
 
-  /* 有新的人加入房间 */
-  socket.on('newGuy', function(data) {
-    console.log('newGuy', data)
-    initOneUser(data);
-  });
+  /* 主逻辑结束 */
 
-  /* 有人离开房间 */
-  socket.on('leaveGuy', function(data) {
-    console.log('leaveGuy', data);
-    try {
-      var userNode = getElem('#user_' + data.user_id);
-      userNode.parentNode.removeChild(userNode);
-    } catch(err) {console.error(err);}
-  });
+  function doHasStorage(data) {
+    getElem('input[type="checkbox"]').checked = !Number(data.sex); // !0 == true, 为女性
+    getElem('input[type="text"]').value = data.name;
+    getElem('input[type="submit"]').style.background = '#6c88c0';
+    getElem('#direct').className = '';
 
-  /* 接收到消息 */
-  socket.on('msg', function(data) {
-    var p = document.createElement('p');
-    p.innerText = data.nickname + ': ' + data.text;
-    getElem('#output').appendChild(p);
-  });
-
-  function initOneUser(data) {
-    var p = document.createElement('p');
-    p.setAttribute('id', 'user_' + data.user_id);
-    p.innerText = ['女', '男'][data.sex] + ': ' + data.nickname;
-    getElem('#room_info').appendChild(p);
   }
 
-  function sendMsg(event, data) {
-    if (!socket) return console.error('no socket');
-    socket.emit(event, data);
-  }
-
-  function initSocket(baseInfo) {
-    var _socket = io(wsUrl, {
-      reconnectionDelay: 1000,
-      reconnectionAttempts: 3
-    });
-
-    _socket.on('connect', function() {
-      // console.log(socket.id);
-      socket.emit('newGuy', baseInfo);
-    });
-
-    _socket.on('disconnect', function() {
-      console.log('disconnect')
-    });
-
-    _socket.on('error', function(err) {
-      console.error('Error: ', err)
-    });
-
-    return _socket;
-  }
 
   function initEvent() {
     getElem('body').addEventListener('click', function(e) {
-      var cmd = e.target.getAttribute('cmd');
-      console.log(cmd);
+      processEvent(e);
+    });
+    getElem('body').addEventListener('input', function(e) {
+      processEvent(e);
+    });
+
+    function processEvent(e) {
+      $this = e.target;
+      var cmd = $this.getAttribute('cmd');
+      // console.log(cmd);
       if (!cmd) return;
 
       switch (cmd) {
-        /* 发送消息 */
-        case 'msg':
-          var room_id = getElem('#room_id').value;
-          var nickname = getElem('#nickname').value;
-          var user_id = getElem('#user_id').value;
-          var text = getElem('textarea').value;
-          var obj = {room_id,nickname,user_id,text};
-          sendMsg(cmd, obj);
+        /* 选择调整的样式 */
+        case 'range_sl':
+          if ($this.getAttribute('class') == 'active') {
+            getElem('.range_detail').innerHTML = '';
+            $this.setAttribute('class', '');
+            return;
+          }
+          $this.parentNode.childNodes.forEach(function(item) {
+            if (item.nodeType == 1) {
+              item.setAttribute('class', '')
+            }
+          });
+          $this.setAttribute('class', 'active');
+
+          var type = $this.getAttribute('r_type');
+
+          var obj = avatarConfig.filter(function(item) {
+            return item.type == type;
+          })[0].attr;
+          getElem('.range_detail').innerHTML = jhtmls.render(rangeHtml, obj);
+
           break;
-
+          /* 调整进度条 input[type='range'] */
+        case 'range_bar':
+          var attr = $this.getAttribute('r_type');
+          var value = e.target.value + e.target.getAttribute('data-unit');
+          if (attr.match(/color/i)) { // 如果是颜色，则不用加单位
+            value = e.target.value;
+          }
+          // 改变avatar对应的样式
+          var parentType = getElem('.active[cmd="range_sl"]').getAttribute('r_type');
+          avatar0.set(parentType, attr, value); // TODO: 减少渲染次数，方案，手动setTimeout，clearTimeout，或者试试requestAnimationFrame
+          // 找到 span 改变其值
+          Array.from(e.target.parentNode.childNodes).some(function(item) { // TODO: 使用月影的方法替代Array.from
+            if (item.nodeType == 1 && item.tagName == 'SPAN') {
+              item.innerText = value;
+              return true;
+            }
+          });
+          // 同时改变配置对象的值，以便提交时可以直接把最后的配置项本身保存到
+          avatarConfig.some(function(item) {
+            if (item.type === parentType) {
+              item.attr.some(function(subItem) {
+                if (subItem.type === attr) {
+                  subItem.default = e.target.value; // 存储不带单位的
+                  return true;
+                }
+              });
+              return true;
+            }
+          });
+          break;
+        case 'submit':
+          var sex = getElem('#checkbox').checked ? 0 : 1;
+          var name = getElem('#nickname').value.trim();
+          console.log(sex, ':', name);
+          if (!name) return alert('input a nickname');
+          var avatarInfo = {
+            user_id: Math.random().toString(32).slice(2, 7), // 生成一个随机的五位字符串作为ID 
+            name: name,
+            sex: sex,
+            floor: 101,
+            avatar: avatarConfig
+          }
+          localStorage.setItem('avatarInfo', JSON.stringify(avatarInfo));
+          window.location = 'house.html';
+          break;
+        case 'direct':
+          window.location = 'house.html';
+          break;
       }
-    })
-  }
+    }
 
+  }
 })();

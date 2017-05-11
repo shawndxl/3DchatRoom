@@ -19,12 +19,24 @@
      * @return {[type]} [description]
      */
     var _crate = function() {
+      if (getElem('#avatar_' + _this.user_id)) return console.log('already has #avatar_' + user_id);
       var html = avatarHtml;
       var div = document.createElement('div');
       _this.$self = div;
-      getElem(parentSelector).appendChild(div);
+      
       div.setAttribute('id', 'avatar_' + _this.user_id);
+      div.className = 'stand_wrap';// 脚下的位置占用框
       div.innerHTML = jhtmls.render(html, avatarInfo);
+      // floor: 101,
+      var $floor = getElem('span[index="'+avatarInfo.floor+'"]');
+
+      if ($floor) {
+        div.style.left = $floor.offsetLeft + 'px';
+        div.style.top = $floor.offsetTop + 'px';
+      }
+
+      getElem(parentSelector).appendChild(div); // 给了位置后再append防止触发默认样式与现有样式的transition
+
       _this.config.forEach(function(item) {
         item.attr.forEach(function(subItem) {
           _this.set(item.type, subItem.type, subItem.default+subItem.unit); // 初始化配置项中的所有属性
