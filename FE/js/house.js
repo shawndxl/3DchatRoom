@@ -7,50 +7,26 @@
 		return;
 	}
 
-	var config = avatarInfo.avatar;
-
 	if (!house.room_id) {
-		house.room_id = 1;
+		house.room_id = 1; // 默认进入房间 1 yaaerr.com/house/1
 	}
+	avatarInfo.room_id = house.room_id;
+	var $avatar = {}; // 每个人avatar的对象字典{user_id: avatarObject}
 	
+	/* 地板，用以定位移动位置及可能的占位逻辑 */
 	initFloor();
+	// initOneUser(avatarInfo);
 
 	/* 给基本信息加上房间信息传递过去，等待连接成功后刷新人物，为了减少传递的数据，也可以自己的信息直接刷新，后端只是返回其他的人 */
-	avatarInfo.room_id = house.room_id;
 	var socket = initSocket(avatarInfo);
-	console.log(socket);
-
-	// 数组用来存放所有的人的avatar对象，对象中保存有其数据，其dom对象，其初始化位置信息，
-	// 新建数组用来存放所有人的位置信息，
-	// 共有20 * 10 个span 每个span
-	// 初始化span时给每一个地板定义一个index，当点击时获取到其值，去数组中取其位置，以及是否由人，有人则无法移动，没人则移动，定义一个位置移动数组，当位置1被占用了则使用数组中的下一个坐标作为移动位置，
-
-	/**
-	 * [获取1-200的地板的位置]
-	 * @param  {[number]} index [1-200 而非 0-199]
-	 * @return {[object]}       [{left: 1, top: 2}]
-	 */
-	function getSpanPostion(index) { 
-		index = index - 1; // 地板的左上角
-		var width = getElem('.bottom').clientWidth / 20; // 地板的宽
-		var height = getElem('.bottom').clientHeight / 10; // 地板的高
-		return {
-			left: index % 20 * width,
-			top: Math.floor(index / 20) * height
-		};
-	}
-
-
-	//TODO: 按照
-	var selfAvatar = new Avatar(avatarInfo, '.bottom'); // Avatar(config, user_id, parentSelector)
-	
-	initEvent();
-	
 	// var socket = '';
 	if (socket) {
+		
+		initEvent();
+
 		/* 初始化房间中的所有人 */
 		socket.on('allGuy', function(allData) {
-			console.log('1', allData);
+			console.log('allGuy: ', allData);
 			if (!allData) return;
 			allData.forEach(function(data) {
 				initOneUser(data);
@@ -59,7 +35,7 @@
 
 		/* 有新的人加入房间 */
 		socket.on('newGuy', function(data) {
-			console.log('newGuy', data)
+			console.log('newGuy: ', data)
 			initOneUser(data);
 		});
 
@@ -67,8 +43,8 @@
 		socket.on('leaveGuy', function(data) {
 			console.log('leaveGuy', data);
 			try {
-				var userNode = getElem('#user_' + data.user_id);
-				userNode.parentNode.removeChild(userNode);
+				var userNode = getElem('#avatar_' + data.user_id);
+				if (userNode) userNode.parentNode.removeChild(userNode);
 			} catch (err) {
 				console.error(err);
 			}
@@ -88,51 +64,56 @@
 	}
 
 	function initOneUser(data) {
-		console.log('back from server', data);
-		//new Avatar(data, '.bottom')
+		console.log('back from server', data.user_id);
+		$avatar[data.user_id] = new Avatar(data, '.bottom')
 	}
 
-	//  $('.person').removeClass('walking')
-	// $('.person').addClass('walking')
 	function initEvent() {
+		getElem('.input_bar').addEventListener('keyup', function(e) {
+			console.log(e.keyCode);
+			if (e.keyCode == 13) { // enter
+				msgSubmit();
+			}
+		});
+
+		function msgSubmit() {
+			var input = getElem('input[type="text"]');
+			var text = input.value.trim();
+			if (!text) return;
+			socket.sendMsg('msg', { // server加上其初始化时的user_id
+				text: text
+			})
+			input.value = '';
+		}
+
 		getElem('body').addEventListener('click', function(e) {
 			processEvent(e);
 		});
-		getElem('body').addEventListener('input', function(e) {
-			processEvent(e);
-		});
+		
 
 		// 无法获取到事件，待修复
 		function processEvent(e) {
 			$this = e.target;
 			var cmd = $this.getAttribute('cmd');
-			// console.log(cmd);
+			console.log(cmd);
 			if (!cmd) return;
 			switch (cmd) {
 				/* 调整进度条 input[type='range'] */
 				case 'floor_board':
-					// walk
+					// walk 可以考虑前段过滤，屏蔽短时间内的频繁操作。
 					var floorIndex = $this.getAttribute('index');
 					socket.sendMsg('position', {
 						floor: floorIndex
-					})
-					// walk(getElem('#avatar_' + avatarInfo.user_id), getSpanPostion(floorIndex));
+					});
 					break;
 				case 'sendMsg':
-					var input = getElem('input[type="text"]');
-					var text = input.value.trim();
-					if (!text) return;
-					socket.sendMsg('msg', { // server加上其初始化时的user_id
-						text: text
-					})
-					//say(selfAvatar.$self, text)
-					input.value = '';
+					msgSubmit();
 					break;
 					// 表情
 				case 'emoji':
 					var type = $this.getAttribute('e_type');
 					console.log(type);
-					selfAvatar.emoji[type]();
+					$avatar[avatarInfo.user_id].emoji[type]();
 					break;
 			}
 		}
@@ -141,9 +122,13 @@
 
 	var personMove;
 	var initTimeStramp = 0;
-
+	
+	// TODO
+	// 共有20 * 10 个地板,行走是走到地板上的某个位置，而非行走到某个left或者top,初始化span时给每一个地板定义一个index，当点击时获取到其值，
+	// 后期可以考虑由server完成位置占用的逻辑
 	// 独立的行走函数还是放置到每个人的对象中去
-	// TODO: 在server端存储分发位置的占用、释放, 如果自己走路为了体验直接走过去，不通过ws，别人的位置通过ws传递过来，这两者需要一个校正
+	// 如果自己走路为了体验直接走过去，不通过ws，别人的位置通过ws传递过来，这两者需要一个校正
+
 	/**
 	 * [谁 走到 哪儿]
 	 * @param  {[DOM object]} $person [谁]
@@ -186,6 +171,21 @@
 		}, time * 1000);
 		// 移动视角
 		getElem('body').style.transformOrigin = '';
+	}
+
+	/**
+	 * [获取1-200的地板的位置]
+	 * @param  {[number]} index [1-200 而非 0-199]
+	 * @return {[object]}       [{left: 1, top: 2}]
+	 */
+	function getSpanPostion(index) { 
+		index = index - 1; // 地板的左上角
+		var width = getElem('.bottom').clientWidth / 20; // 地板的宽
+		var height = getElem('.bottom').clientHeight / 10; // 地板的高
+		return {
+			left: index % 20 * width,
+			top: Math.floor(index / 20) * height
+		};
 	}
 
 	function say($elem, text) {

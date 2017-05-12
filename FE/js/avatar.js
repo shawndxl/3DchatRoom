@@ -19,7 +19,7 @@
      * @return {[type]} [description]
      */
     var _crate = function() {
-      if (getElem('#avatar_' + _this.user_id)) return console.log('already has #avatar_' + user_id);
+      if (getElem('#avatar_' + _this.user_id)) return console.log('already has #avatar_' + _this.user_id);
       var html = avatarHtml;
       var div = document.createElement('div');
       _this.$self = div;

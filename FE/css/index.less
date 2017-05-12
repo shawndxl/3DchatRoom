@@ -17,6 +17,7 @@
     background-image: none;
     background: transparent;
     border: 1px solid #d7d7d7;
+        transform-style: preserve-3d;
 
     input {
       float: left;
@@ -97,6 +98,7 @@
         top: 50%;
         transition: all .4s linear;
         background: rgba(255, 255, 255, 0.1);
+        transform-style: preserve-3d; /* 给其加上3d旋转之后firefox实现了站立(chrome上不需要)，同时在chrome上能够接收到hover，待结合test/readme 做进一步测试 */
       }
 
 			.liti {
